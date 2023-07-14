@@ -1,0 +1,12 @@
+{
+  "name": "starter",
+  "version": "1.0.0",
+  "description": "part 2",
+  "main": "event-loop.js",
+  "scripts": {
+    "start": "set UV_THREADPOOL_SIZE=4 && node event-loop.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
