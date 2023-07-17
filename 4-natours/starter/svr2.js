@@ -1,11 +1,11 @@
-//const { MongoClient, ServerApiVersion } = require('mongodb');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: './config.env' });
-const app = require('./app');
 
 const DB = process.env.DATABASE;
+
+console.log('Starting db connection...');
 
 mongoose
   .connect(DB, {
@@ -16,9 +16,3 @@ mongoose
   .then(() => {
     console.log('DB connection success');
   });
-
-//start server
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`app running ${port}`);
-});
