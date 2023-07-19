@@ -86,12 +86,16 @@ tourSchema.pre('save', function (next) {
 tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
   this.start = Date.now();
+  console.log(`T1: ${this.start}`);
   next();
 });
 
 tourSchema.post(/^find/, (docs, next) => {
+  console.log(`T2: ${this.start}`);
   console.log(this);
+  //console.log(this.start);
   console.log(`Query: ${Date.now() - this.start}`);
+  //console.log(docs);
   // if (docs) {
   //   console.log(docs);
   // }
