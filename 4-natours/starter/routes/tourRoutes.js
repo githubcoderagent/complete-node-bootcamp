@@ -1,20 +1,20 @@
 const express = require('express');
 const tourController = require('../controllers/tourController');
 
-//middleware
 const tourRouter = express.Router();
 
-tourRouter.route('/tour-stats').get(tourController.getTourStats);
-tourRouter.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
+// router.param('id', tourController.checkID);
 
 tourRouter
   .route('/top-5-cheap')
   .get(tourController.aliasTopTours, tourController.getAllTours);
 
+tourRouter.route('/tour-stats').get(tourController.getTourStats);
+tourRouter.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
+
 tourRouter //tours
   .route('/')
   .get(tourController.getAllTours)
-  //.post(tourController.checkBody, tourController.createTour);
   .post(tourController.createTour);
 
 tourRouter //tours
