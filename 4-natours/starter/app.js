@@ -1,20 +1,11 @@
 const express = require('express');
 const morgan = require('morgan');
-
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 
 const app = express();
-
-// const notDoneYet = {
-//   status: 'error',
-//   message: 'not done yet',
-//   data: {
-//     message: 'not done yet',
-//   },
-// };
 
 //middleware
 if (process.env.NODE_ENV === 'development') {

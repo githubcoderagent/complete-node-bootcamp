@@ -1,3 +1,5 @@
+const logger = require('logger');
+
 class APIFeatures {
   constructor(query, queryString) {
     this.query = query;
@@ -9,7 +11,7 @@ class APIFeatures {
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach((el) => delete queryObj[el]);
 
-    //console.log(queryObj);
+    logger.debug(queryObj);
     //const tours = await Tour.find(req.query);
     //const queryStr = JSON.stringify(queryObj);
     const queryStr = JSON.parse(
@@ -18,7 +20,7 @@ class APIFeatures {
         (match) => `$${match}`,
       ),
     );
-    //console.log(`queryStr ${JSON.stringify(queryStr)}`);
+    logger.debug(`queryStr ${JSON.stringify(queryStr)}`);
     this.query.find(queryStr);
     return this;
   }

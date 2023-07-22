@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
-//const validator = require('validator');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -11,7 +10,6 @@ const tourSchema = new mongoose.Schema(
       trim: true,
       maxlength: [40, 'Max name is 40'],
       minlength: [10, 'Min length for name is 10'],
-      //validate: [validator.isAlpha, 'Must only have characters'],
     },
     duration: {
       type: Number,
@@ -83,40 +81,25 @@ const tourSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   },
 );
-
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
-
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
 });
-// tourSchema.pre('save', (next) => {
-//   //console.log('will save...');
-//   next();
-// });
-// tourSchema.post('save', (doc, next) => {
-//   //console.log(doc);
-//   next();
-// });
-
 tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
   this.start = Date.now();
   next();
 });
-
 tourSchema.post(/^find/, function (res, next) {
   console.log(`Query: ${Date.now() - this.start}`);
   next();
 });
-
 tourSchema.pre('aggregate', function (next) {
   this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
   next();
 });
-
 const Tour = mongoose.model('Tour', tourSchema);
-
 module.exports = Tour;

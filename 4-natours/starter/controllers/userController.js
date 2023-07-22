@@ -1,20 +1,19 @@
-
 exports.getAllUsers = (req, res) => {
-    res.notDoneYet();
+  res.notDoneYet();
 };
 
 exports.createUser = (req, res) => {
-    res.notDoneYet();
+  res.notDoneYet();
 };
 
 exports.getUser = (req, res) => {
-    res.notDoneYet();
+  res.notDoneYet();
 };
 
 exports.updateeUser = (req, res) => {
-    res.notDoneYet();
+  res.notDoneYet();
 };
 
 exports.deleteUser = (req, res) => {
-    res.notDoneYet();
+  res.notDoneYet();
 };
