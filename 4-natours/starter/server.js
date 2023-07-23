@@ -34,7 +34,7 @@ const server = app.listen(port, () => {
 setInterval(
   () =>
     server.getConnections((err, connections) =>
-      logger.info(`${connections} connections currently open`),
+      logger.silly(`${connections} connections currently open`),
     ),
   10000,
 );

@@ -21,9 +21,13 @@ const logger = winston.createLogger({
     //new winston.transports.Console(),
     //new winston.transports.File({ filename: 'logs/proapp.log' }),
     process.env.NODE_ENV === 'development'
-      ? new winston.transports.Console()
+      ? new winston.transports.Console({ level: 'debug' })
       : new winston.transports.File({ filename: 'logs/proapp.log' }),
-    new winston.transports.File({ filename: 'logs/app.log' }),
+    new winston.transports.File({ filename: 'logs/app.log', level: 'debug' }),
+    new winston.transports.File({
+      filename: 'logs/sillyapp.log',
+      level: 'silly',
+    }),
   ],
 });
 logger.info(`App is running in ${process.env.NODE_ENV} mode.`);
