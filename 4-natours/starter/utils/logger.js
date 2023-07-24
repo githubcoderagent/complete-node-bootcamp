@@ -10,8 +10,9 @@ const logger = winston.createLogger({
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.printf(
-      (info) => `${info.timestamp} ${info.level}: ${info.message}`,
+      (info) => `${info.timestamp} ${info.level} ${info.message}`,
     ),
+    //winston.format.uncolorize(),
   ),
   // Log to the console and a file
   //if (process.env.NODE_ENV === 'development') {
@@ -21,15 +22,36 @@ const logger = winston.createLogger({
     //new winston.transports.Console(),
     //new winston.transports.File({ filename: 'logs/proapp.log' }),
     process.env.NODE_ENV === 'development'
-      ? new winston.transports.Console({ level: 'debug' })
+      ? new winston.transports.Console({
+          level: 'debug',
+          format: winston.format.combine(
+            winston.format.colorize(),
+            winston.format.printf(
+              (info) => `${info.timestamp} ${info.level} ${info.message}`,
+            ),
+          ),
+        })
       : new winston.transports.File({ filename: 'logs/proapp.log' }),
-    new winston.transports.File({ filename: 'logs/app.log', level: 'debug' }),
     new winston.transports.File({
-      filename: 'logs/sillyapp.log',
+      filename: 'logs/app.log',
+      level: 'debug',
+      format: winston.format.uncolorize(),
+    }),
+    new winston.transports.File({
+      filename: 'logs/sillyapp.json',
       level: 'silly',
+      //json: true,
+      maxsize: 500,
+      maxFiles: 5,
+      tailable: true,
+      //showLevel: true,
+      format: winston.format.combine(
+        winston.format.uncolorize(),
+        winston.format.json(),
+      ),
     }),
   ],
 });
-logger.info(`App is running in ${process.env.NODE_ENV} mode.`);
+logger.debug(`App is running in ${process.env.NODE_ENV} mode.`);
 
 module.exports = logger;

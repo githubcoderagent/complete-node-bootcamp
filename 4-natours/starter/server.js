@@ -44,10 +44,7 @@ let connections = [];
 server.on('connection', (connection) => {
   connections.push(connection);
   connection.on('close', () => {
-    connections = connections.filter((curr) => {
-      logger.debug('test');
-      return curr !== connection;
-    });
+    connections = connections.filter((curr) => curr !== connection);
   });
 });
 
