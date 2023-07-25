@@ -15,11 +15,12 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, 'Valid email'],
   },
-  phote: String,
+  photo: String,
   password: {
     type: String,
     required: [true, 'password'],
     minlength: 8,
+    select: false,
   },
   passwordConfirm: {
     type: String,
@@ -29,6 +30,7 @@ const userSchema = new mongoose.Schema({
         return el === this.password;
       },
       message: 'Passwords not the same',
+      select: false,
     },
   },
 });
@@ -41,6 +43,13 @@ userSchema.pre('save', async function (next) {
   this.passwordConfirm = undefined;
   next();
 });
+
+userSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword,
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 // userSchema.pre(
 //     'save',

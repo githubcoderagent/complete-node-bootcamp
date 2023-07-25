@@ -1,7 +1,7 @@
 const winston = require('winston');
-const dotenv = require('dotenv');
+//const dotenv = require('dotenv');
 
-dotenv.config({ path: './config.env' });
+//dotenv.config({ path: './config.env' });
 
 const logger = winston.createLogger({
   // Log only if level is less than (meaning more severe) or equal to this
@@ -31,23 +31,52 @@ const logger = winston.createLogger({
             ),
           ),
         })
-      : new winston.transports.File({ filename: 'logs/proapp.log' }),
+      : new winston.transports.File({
+          filename: 'logs/proapp.log',
+          level: 'info',
+          maxsize: 10000000,
+          maxFiles: 5,
+          tailable: true,
+          format: winston.format.combine(
+            winston.format.uncolorize(),
+            //winston.format.json(),
+          ),
+        }),
     new winston.transports.File({
       filename: 'logs/app.log',
       level: 'debug',
-      format: winston.format.uncolorize(),
+      //format: winston.format.uncolorize(),
+      maxsize: 1000000,
+      maxFiles: 5,
+      tailable: true,
+      //showLevel: true,
+      format: winston.format.combine(
+        winston.format.uncolorize(),
+        //winston.format.json(),
+      ),
     }),
     new winston.transports.File({
-      filename: 'logs/sillyapp.json',
+      filename: 'logs/sillyapp_json.log',
       level: 'silly',
-      //json: true,
-      maxsize: 500,
+      maxsize: 10000000,
       maxFiles: 5,
       tailable: true,
       //showLevel: true,
       format: winston.format.combine(
         winston.format.uncolorize(),
         winston.format.json(),
+      ),
+    }),
+    new winston.transports.File({
+      filename: 'logs/sillyapp.log',
+      level: 'silly',
+      maxsize: 10000000,
+      maxFiles: 5,
+      tailable: true,
+      //showLevel: true,
+      format: winston.format.combine(
+        winston.format.uncolorize(),
+        //winston.format.json(),
       ),
     }),
   ],

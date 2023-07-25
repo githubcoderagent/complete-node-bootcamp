@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const logger = require('../utils/logger');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -94,7 +95,7 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 tourSchema.post(/^find/, function (res, next) {
-  console.log(`Query: ${Date.now() - this.start}`);
+  logger.silly(`Query took ${Date.now() - this.start} milliseconds`);
   next();
 });
 tourSchema.pre('aggregate', function (next) {

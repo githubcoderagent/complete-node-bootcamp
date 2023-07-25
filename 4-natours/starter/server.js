@@ -1,9 +1,10 @@
 //const { MongoClient, ServerApiVersion } = require('mongodb');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+require('dotenv').config({ path: './config.env' });
+//const dotenv = require('dotenv');
 const logger = require('./utils/logger');
 
-dotenv.config({ path: './config.env' });
+//dotenv.config({ path: './config.env' });
 const app = require('./app');
 
 process.on('uncaughtException', (err) => {
@@ -23,21 +24,25 @@ mongoose
     //useCreateIndex: true,
     //useFindAndModify: false,
   })
-  .then(() => logger.info('DB connection success'));
+  .then(() => logger.verbose('DB connection success'));
 
 //start server
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
-  logger.info(`app running ${port}`);
+  logger.verbose(`app running ${port}`);
 });
 
-setInterval(
-  () =>
-    server.getConnections((err, connections) =>
-      logger.silly(`${connections} connections currently open`),
-    ),
-  10000,
-);
+//set this to 1 second to fill logs for testing purposes
+// setInterval(
+//   () =>
+//   nothing
+//     server.getConnections((err, connections) => {
+//       if (connections >= 0) {
+//         logger.silly(`${connections} connections currently open`);
+//       }
+//     }),
+//   process.env.NODE_ENV === 'development' ? 1000 : 10000,
+// );
 
 let connections = [];
 
@@ -49,9 +54,9 @@ server.on('connection', (connection) => {
 });
 
 function shutDown() {
-  logger.info('Received kill signal, shutting down gracefully');
+  logger.warn('Received kill signal, shutting down gracefully');
   server.close(() => {
-    logger.info('Closed out remaining connections');
+    logger.warn('Closed out remaining connections');
     process.exit(0);
   });
 

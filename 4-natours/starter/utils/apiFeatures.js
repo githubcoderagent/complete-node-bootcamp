@@ -10,17 +10,13 @@ class APIFeatures {
     const queryObj = { ...this.queryString };
     const excludedFields = ['page', 'sort', 'limit', 'fields'];
     excludedFields.forEach((el) => delete queryObj[el]);
-
-    logger.debug(queryObj);
-    //const tours = await Tour.find(req.query);
-    //const queryStr = JSON.stringify(queryObj);
     const queryStr = JSON.parse(
       JSON.stringify(queryObj).replace(
         /\b(gte|gt|lte|lt)\b/g,
         (match) => `$${match}`,
       ),
     );
-    logger.debug(`queryStr ${JSON.stringify(queryStr)}`);
+    logger.silly(`queryStr ${JSON.stringify(queryStr)}`);
     this.query.find(queryStr);
     return this;
   }
