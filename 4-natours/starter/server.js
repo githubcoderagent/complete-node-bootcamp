@@ -13,10 +13,12 @@ process.on('uncaughtException', (err) => {
   process.exit(1);
 });
 
-const DB = process.env.DATABASE.replace(
-  '<PASSWORD>',
-  process.env.DATABASE_PASSWORD,
-);
+// const DB = process.env.DATABASE.replace(
+//   '<PASSWORD>',
+//   process.env.DATABASE_PASSWORD,
+// );
+
+const DB = process.env.DATABASE_LOCAL;
 
 mongoose
   .connect(DB, {
@@ -24,7 +26,8 @@ mongoose
     //useCreateIndex: true,
     //useFindAndModify: false,
   })
-  .then(() => logger.verbose('DB connection success'));
+  .then(() => logger.verbose('DB connection success'))
+  .finally(() => logger.verbose('DB connect FAILED'));
 
 //start server
 const port = process.env.PORT || 3000;
