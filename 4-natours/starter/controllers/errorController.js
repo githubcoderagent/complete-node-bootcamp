@@ -26,7 +26,7 @@ const sendErrorDev = (err, res) => {
   logger.silly('err001');
   logger.silly(err.message);
   logger.warn(err.message);
-  logger.silly(JSON.stringify(err));
+  //logger.silly(JSON.stringify(err));
   logger.silly('err004');
   res.status(err.statusCode).json({
     status: err.status,
