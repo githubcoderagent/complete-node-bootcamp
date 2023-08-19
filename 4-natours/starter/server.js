@@ -20,14 +20,60 @@ const DB = process.env.DATABASE.replace(
 
 //const DB = process.env.DATABASE_LOCAL;
 
+// const { MongoClient, ServerApiVersion } = require('mongodb');
+// const uri = "mongodb+srv://<username>:<password>@clusternatoursapp.vlmm75e.mongodb.net/?retryWrites=true&w=majority";
+
+// // Create a MongoClient with a MongoClientOptions object to set the Stable API version
+// const client = new MongoClient(uri, {
+//   serverApi: {
+//     version: ServerApiVersion.v1,
+//     strict: true,
+//     deprecationErrors: true,
+//   }
+// });
+
+// async function run() {
+//   try {
+//     // Connect the client to the server	(optional starting in v4.7)
+//     await client.connect();
+//     // Send a ping to confirm a successful connection
+//     await client.db("admin").command({ ping: 1 });
+//     console.log("Pinged your deployment. You successfully connected to MongoDB!");
+//   } finally {
+//     // Ensures that the client will close when you finish/error
+//     await client.close();
+//   }
+// }
+// run().catch(console.dir);
+
 mongoose
   .connect(DB, {
     useNewUrlParser: true,
     //useCreateIndex: true,
     //useFindAndModify: false,
+    //useUnifiedTopology: true,
+    heartbeatFrequencyMS: 15000,
+    autoIndex: true,
+    connectTimeoutMS: 10000, // Give up initial connection after 10 seconds
+    socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
   })
   .then(() => logger.verbose('DB connection success'))
-  .catch(() => logger.verbose('DB connect FAILED'));
+  .catch(() => {
+    logger.verbose('DB connect FAILED');
+    mongoose.disconnect();
+  });
+
+mongoose.connection.on('connected', () => {
+  logger.debug(`MongoDB connection successful!`);
+});
+
+mongoose.connection.on('error', (err) => {
+  logger.debug(`MongoDB connection error => ${err}!`);
+});
+
+mongoose.connection.on('disconnected', () => {
+  logger.debug(`MongoDB connection disconnected`);
+});
 
 //start server
 const port = process.env.PORT || 3000;
