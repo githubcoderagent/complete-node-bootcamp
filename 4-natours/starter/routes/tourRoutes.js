@@ -11,8 +11,8 @@ tourRouter.route('/tour-stats').get(tourController.getTourStats);
 tourRouter.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
 tourRouter
   .route('/')
-  //.get(authController.protect, tourController.getAllTours)
-  .get(tourController.getAllTours)
+  //.get(tourController.getAllTours)
+  .get(authController.protect, tourController.getAllTours)
   .post(authController.protect, tourController.createTour);
 tourRouter
   .route('/:id')

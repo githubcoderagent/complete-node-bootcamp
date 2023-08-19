@@ -39,4 +39,12 @@ app.all('*', (req, res, next) => {
 
 app.use(globalErrorHandler);
 
+// logger.error('test error message');
+// logger.warn('test warning message');
+// logger.info('test info message');
+// logger.http('test http message');
+// logger.verbose('test verbose message');
+// logger.debug('test debug message');
+// logger.silly('tes silly messeage');
+
 module.exports = app;

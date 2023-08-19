@@ -1,4 +1,5 @@
 const AppError = require('../utils/appError');
+const logger = require('../utils/logger');
 
 const handleCastErrorDB = (err) => {
   const message = `Invalid $(err.path): ${err.value}`;
@@ -18,7 +19,15 @@ const handleValidationErrorDB = (err) => {
   return new AppError(message, 400);
 };
 
+const handleJWTError = () => new AppError('Invalid token', 401);
+const handleJWTExpiredError = () => new AppError('Token expired', 401);
+
 const sendErrorDev = (err, res) => {
+  logger.silly('err001');
+  logger.silly(err.message);
+  logger.warn(err.message);
+  logger.silly(JSON.stringify(err));
+  logger.silly('err004');
   res.status(err.statusCode).json({
     status: err.status,
     error: err,
@@ -27,6 +36,10 @@ const sendErrorDev = (err, res) => {
   });
 };
 const sendErrorProd = (err, res) => {
+  logger.verbose('err002');
+  logger.silly(err.message);
+  logger.silly('err003');
+  //console.error('ERROR', err);
   if (err.isOperational) {
     res.status(err.statusCode).json({
       status: err.status,
@@ -35,6 +48,7 @@ const sendErrorProd = (err, res) => {
   } //if
   else {
     //console.error('ERROR', err);
+    //logger.debug(err);
     res.status(500).json({
       status: 'error',
       message: 'Something went wrong',
@@ -44,7 +58,7 @@ const sendErrorProd = (err, res) => {
 
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
-  err.status = err.status || 'error';
+  err.status = err.status || 'unhandled error';
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, res);
   } //if
@@ -59,6 +73,12 @@ module.exports = (err, req, res, next) => {
     } //if
     if (err.name === 'ValidationError') {
       error = handleValidationErrorDB(error);
+    } //if
+    if (err.name === 'JsonWebTokenError') {
+      error = handleJWTError();
+    } //if
+    if (err.name === 'TokenExpiredError') {
+      error = handleJWTExpiredError();
     } //if
     sendErrorProd(error, res);
   } //else
