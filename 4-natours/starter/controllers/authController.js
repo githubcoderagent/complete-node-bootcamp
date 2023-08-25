@@ -18,6 +18,8 @@ exports.signup = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
+    name2: req.body.name2,
+    junk: req.body.junk,
   });
 
   const token = signToken(newUser._id);
@@ -65,7 +67,15 @@ exports.protect = catchAsync(async (req, res, next) => {
   } //if
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-  logger.debug(decoded);
+  logger.debug(JSON.stringify(decoded));
+
+  const freshUser = await User.findById(decoded.id);
+
+  if (!freshUser) {
+    return next(new AppError('user no longer exists for this token', 401));
+  } //if
+
+  // freshUser.changedPasswordAfter(decoded.iat);
 
   next();
 });

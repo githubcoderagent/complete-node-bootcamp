@@ -65,6 +65,7 @@ mongoose
 
 mongoose.connection.on('connected', () => {
   logger.debug(`MongoDB connection successful!`);
+  logger.info('success');
 });
 
 mongoose.connection.on('error', (err) => {

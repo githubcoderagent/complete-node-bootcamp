@@ -39,6 +39,7 @@ const sendErrorProd = (err, res) => {
   logger.verbose('err002');
   logger.silly(err.message);
   logger.silly('err003');
+  console.log(err);
   //console.error('ERROR', err);
   if (err.isOperational) {
     res.status(err.statusCode).json({
@@ -60,9 +61,12 @@ module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'unhandled error';
   if (process.env.NODE_ENV === 'development') {
+    console.log(err);
     sendErrorDev(err, res);
   } //if
   else {
+    console.log('prod err');
+    console.log(err);
     let error = { ...err }; //does not copy name
     //let error = { ...getAllKeysConditionally(err) };
     if (err.name === 'CastError') {
