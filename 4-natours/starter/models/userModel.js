@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, 'Valid email'],
   },
+  junk: String,
   photo: String,
   password: {
     type: String,
@@ -33,9 +34,7 @@ const userSchema = new mongoose.Schema({
       select: false,
     },
   },
-  passwordChangedAt: Date,
-  junk: String,
-  name2: String,
+  passwordChangedAt: Date || Date(),
 });
 
 userSchema.pre('save', async function (next) {
@@ -55,11 +54,16 @@ userSchema.methods.correctPassword = async function (
 };
 
 userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
-  console.log('bye');
   if (this.passwordChangedAt) {
-    //const changedTime
-    console.log('hi');
-    console.log(this.passwordChangedAt, JWTTimestamp);
+    //const changedTimestamp = this.passwordChangedAt.getTime() / 1000;
+
+    //is this needed? line above seems to work fine
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10,
+    );
+    //console.log(changedTimestamp, this.passwordChangedAt, JWTTimestamp);
+    return JWTTimestamp < changedTimestamp;
   } //if
   return false;
 };

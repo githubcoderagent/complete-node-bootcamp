@@ -18,8 +18,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
-    name2: req.body.name2,
-    junk: req.body.junk,
+    passwordChangedAt: req.body.passwordChangedAt,
   });
 
   const token = signToken(newUser._id);
@@ -30,6 +29,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     data: {
       user: newUser.name,
       email: newUser.email,
+      passwordChangedAt: newUser.passwordChangedAt,
     },
   });
 });
@@ -69,13 +69,16 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   logger.debug(JSON.stringify(decoded));
 
-  const freshUser = await User.findById(decoded.id);
+  const currentUsesr = await User.findById(decoded.id);
 
-  if (!freshUser) {
+  if (!currentUsesr) {
     return next(new AppError('user no longer exists for this token', 401));
   } //if
 
-  // freshUser.changedPasswordAfter(decoded.iat);
+  if (currentUsesr.changedPasswordAfter(decoded.iat)) {
+    return next(new AppError('pwd changed. log in again', 401));
+  } //if
+  req.user = currentUsesr;
 
   next();
 });
