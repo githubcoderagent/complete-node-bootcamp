@@ -19,6 +19,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
     passwordChangedAt: req.body.passwordChangedAt,
+    role: req.body.role,
   });
 
   const token = signToken(newUser._id);
@@ -69,16 +70,26 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   logger.debug(JSON.stringify(decoded));
 
-  const currentUsesr = await User.findById(decoded.id);
+  const currentUser = await User.findById(decoded.id);
 
-  if (!currentUsesr) {
+  if (!currentUser) {
     return next(new AppError('user no longer exists for this token', 401));
   } //if
 
-  if (currentUsesr.changedPasswordAfter(decoded.iat)) {
+  if (currentUser.changedPasswordAfter(decoded.iat)) {
     return next(new AppError('pwd changed. log in again', 401));
   } //if
-  req.user = currentUsesr;
 
+  req.user = currentUser;
   next();
 });
+
+exports.restrictTo =
+  (...roles) =>
+  (req, res, next) => {
+    //roles is an array
+    if (!roles.includes(req.user.role)) {
+      return next(new AppError('You do not have permission', 403));
+    } //if
+    next();
+  };
